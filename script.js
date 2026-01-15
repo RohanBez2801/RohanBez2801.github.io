@@ -6,8 +6,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (menuBtn && mobileMenu && menuIcon) {
         menuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-            if (mobileMenu.classList.contains('hidden')) {
+            const isHidden = mobileMenu.classList.toggle('hidden');
+            menuBtn.setAttribute('aria-expanded', !isHidden);
+
+            if (isHidden) {
                 menuIcon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
             } else {
                 menuIcon.setAttribute('d', 'M6 18L18 6M6 6l12 12');
@@ -18,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('#mobile-menu a').forEach(link => {
             link.addEventListener('click', () => {
                 mobileMenu.classList.add('hidden');
+                menuBtn.setAttribute('aria-expanded', 'false');
                 menuIcon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
             });
         });
