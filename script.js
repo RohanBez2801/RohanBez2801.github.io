@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Custom Cursor logic
     const cursor = document.getElementById('custom-cursor');
     const cursorDot = document.getElementById('cursor-dot');
-    
+
     if (!cursor || !cursorDot) return;
 
     let mouseX = 0, mouseY = 0;
@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
-        
+
         cursorDot.style.left = `${mouseX - 2}px`;
         cursorDot.style.top = `${mouseY - 2}px`;
     });
@@ -104,7 +104,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Performance: Throttling mousemove for background blobs
+    // Cache the DOM query outside the event listener to prevent frequent DOM reflows/searches
+    const backgroundBlobs = document.querySelectorAll('.fixed .animate-pulse');
     let lastMove = 0;
+
     document.addEventListener('mousemove', (e) => {
         const now = Date.now();
         if (now - lastMove < 30) return;
@@ -112,11 +115,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const x = (e.clientX / window.innerWidth - 0.5) * 2;
         const y = (e.clientY / window.innerHeight - 0.5) * 2;
-        
-        const blobs = document.querySelectorAll('.animate-pulse');
-        if (blobs.length >= 2) {
-            blobs[0].style.transform = `translate(${x * 30}px, ${y * 30}px)`;
-            blobs[1].style.transform = `translate(${-x * 30}px, ${-y * 30}px)`;
+
+        if (backgroundBlobs.length >= 2) {
+            backgroundBlobs[0].style.transform = `translate(${x * 30}px, ${y * 30}px)`;
+            backgroundBlobs[1].style.transform = `translate(${-x * 30}px, ${-y * 30}px)`;
         }
     });
 
@@ -124,21 +126,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const glassCards = document.querySelectorAll('.glass-card');
     glassCards.forEach(card => {
         card.addEventListener('mousemove', (e) => {
-            if (window.innerWidth < 1024) return; 
-            
+            if (window.innerWidth < 1024) return;
+
             const rect = card.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
-            
+
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
-            
+
             const rotateX = (y - centerY) / 30; // Reduced intensity for smoothness
             const rotateY = (centerX - x) / 30;
-            
+
             card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-12px) scale(1.02)`;
         });
-        
+
         card.addEventListener('mouseleave', () => {
             card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0) scale(1)`;
         });
