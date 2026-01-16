@@ -119,15 +119,15 @@ h1, h2, h3, .neon-text {
     .glass-card:hover {
         transform: translateY(-5px) scale(1.01);
     }
-    
+
     h1 {
         font-size: 4rem !important;
     }
-    
+
     .text-7xl {
         font-size: 3.5rem !important;
     }
-    
+
     .text-9xl {
         font-size: 4rem !important;
     }
@@ -221,4 +221,23 @@ section.visible .reveal-text > * {
     inset: 0;
     background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
     pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    @media (pointer: fine) {
+        * {
+            cursor: auto !important;
+        }
+    }
+
+    #custom-cursor, #cursor-dot {
+        display: none !important;
+    }
 }
