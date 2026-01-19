@@ -119,15 +119,15 @@ h1, h2, h3, .neon-text {
     .glass-card:hover {
         transform: translateY(-5px) scale(1.01);
     }
-    
+
     h1 {
         font-size: 4rem !important;
     }
-    
+
     .text-7xl {
         font-size: 3.5rem !important;
     }
-    
+
     .text-9xl {
         font-size: 4rem !important;
     }
@@ -221,4 +221,47 @@ section.visible .reveal-text > * {
     inset: 0;
     background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
     pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    /* Restore system cursor */
+    * {
+        cursor: auto !important;
+    }
+
+    #custom-cursor, #cursor-dot {
+        display: none !important;
+    }
+
+    /* Stop infinite animations */
+    .animate-pulse,
+    .animate-float,
+    .animate-gradient {
+        animation: none !important;
+    }
+
+    /* Disable smooth scrolling */
+    html, body {
+        scroll-behavior: auto !important;
+    }
+
+    /* Simplify section entry animations */
+    section {
+        transform: none !important;
+        filter: none !important;
+        transition: opacity 0.5s ease !important;
+    }
+
+    /* Simplify hover effects */
+    .glass-card:hover,
+    .glass-card-fuchsia:hover,
+    .group:hover .transform {
+        transform: none !important;
+    }
+
+    /* Ensure reveal text is visible */
+    .reveal-text > * {
+        transform: none !important;
+        transition: none !important;
+    }
 }
