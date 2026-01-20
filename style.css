@@ -222,3 +222,11 @@ section.visible .reveal-text > * {
     background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
     pointer-events: none;
 }
+/* Animation Delays */
+.delay-2s {
+    animation-delay: 2s !important;
+}
+
+.delay-4s {
+    animation-delay: 4s !important;
+}
