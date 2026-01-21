@@ -11,6 +11,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body class="bg-black text-white overflow-x-hidden grid-background">
+    <a href="#main-content" class="skip-link fixed top-6 left-1/2 -translate-x-1/2 z-[100] -translate-y-[200%] focus:translate-y-0 bg-black border border-cyan-400 text-cyan-400 px-8 py-3 font-bold uppercase tracking-widest transition-transform duration-300 rounded-full focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-black shadow-[0_0_20px_rgba(34,211,238,0.5)]">
+        Skip to Content
+    </a>
     <div id="custom-cursor"></div>
     <div id="cursor-dot"></div>
     <div class="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none">
@@ -47,7 +50,7 @@
         </div>
     </header>
 
-    <main>
+    <main id="main-content" class="outline-none" tabindex="-1">
         <!-- Hero Section -->
         <section class="min-h-screen flex items-center justify-center relative pt-20">
             <div class="container mx-auto px-6 text-center z-10">
