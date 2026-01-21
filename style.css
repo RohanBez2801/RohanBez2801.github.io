@@ -119,15 +119,15 @@ h1, h2, h3, .neon-text {
     .glass-card:hover {
         transform: translateY(-5px) scale(1.01);
     }
-    
+
     h1 {
         font-size: 4rem !important;
     }
-    
+
     .text-7xl {
         font-size: 3.5rem !important;
     }
-    
+
     .text-9xl {
         font-size: 4rem !important;
     }
@@ -221,4 +221,13 @@ section.visible .reveal-text > * {
     inset: 0;
     background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
     pointer-events: none;
+}
+
+/* Animation Delays */
+.delay-2s {
+    animation-delay: 2s;
+}
+
+.delay-4s {
+    animation-delay: 4s;
 }
