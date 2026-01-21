@@ -73,13 +73,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let mouseX = 0, mouseY = 0;
     let cursorX = 0, cursorY = 0;
+    let cursorScale = 1;
+    let isHovering = false;
 
     document.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
-
-        cursorDot.style.left = `${mouseX - 2}px`;
-        cursorDot.style.top = `${mouseY - 2}px`;
     });
 
     const animateCursor = () => {
@@ -87,8 +86,14 @@ document.addEventListener('DOMContentLoaded', () => {
         cursorX += (mouseX - cursorX) * easing;
         cursorY += (mouseY - cursorY) * easing;
 
-        cursor.style.left = `${cursorX - 10}px`;
-        cursor.style.top = `${cursorY - 10}px`;
+        // Performance: Use transform instead of left/top to avoid layout thrashing
+        cursorDot.style.transform = `translate3d(${mouseX - 2}px, ${mouseY - 2}px, 0)`;
+
+        // Interpolate scale for smooth hover effect
+        const targetScale = isHovering ? 3 : 1;
+        cursorScale += (targetScale - cursorScale) * 0.1;
+
+        cursor.style.transform = `translate3d(${cursorX - 10}px, ${cursorY - 10}px, 0) scale(${cursorScale})`;
 
         requestAnimationFrame(animateCursor);
     };
@@ -97,11 +102,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const hoverElements = 'a, button, .glass-card, .px-4.py-2.glass, span.px-4.py-2, [role="button"]';
     document.addEventListener('mouseover', (e) => {
         if (e.target.closest(hoverElements)) {
+            isHovering = true;
             cursor.classList.add('cursor-hover');
         }
     });
     document.addEventListener('mouseout', (e) => {
         if (e.target.closest(hoverElements)) {
+            isHovering = false;
             cursor.classList.remove('cursor-hover');
         }
     });
