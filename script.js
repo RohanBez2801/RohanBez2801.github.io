@@ -128,15 +128,30 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add parallax effect to glass cards on mouse move
     const glassCards = document.querySelectorAll('.glass-card');
     glassCards.forEach(card => {
+        let rect;
+        let centerX, centerY;
+
+        const updateRect = () => {
+            const bounds = card.getBoundingClientRect();
+            rect = {
+                left: bounds.left + window.scrollX,
+                top: bounds.top + window.scrollY,
+                width: bounds.width,
+                height: bounds.height
+            };
+            centerX = rect.width / 2;
+            centerY = rect.height / 2;
+        };
+
+        card.addEventListener('mouseenter', updateRect);
+
         card.addEventListener('mousemove', (e) => {
             if (window.innerWidth < 1024) return;
 
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+            if (!rect) updateRect();
 
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
+            const x = e.pageX - rect.left;
+            const y = e.pageY - rect.top;
 
             const rotateX = (y - centerY) / 30; // Reduced intensity for smoothness
             const rotateY = (centerX - x) / 30;
