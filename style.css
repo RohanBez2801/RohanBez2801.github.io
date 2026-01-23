@@ -222,3 +222,20 @@ section.visible .reveal-text > * {
     background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
     pointer-events: none;
 }
+/* Skip to content link */
+.skip-link {
+    position: fixed;
+    top: -100%;
+    left: 0;
+    z-index: 100;
+    background: var(--neon-cyan);
+    color: black;
+    padding: 1rem;
+    font-weight: bold;
+    transition: top 0.3s;
+    text-decoration: none;
+}
+
+.skip-link:focus {
+    top: 0;
+}
