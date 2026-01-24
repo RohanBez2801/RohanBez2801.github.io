@@ -66,6 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Custom Cursor logic
+    // Optimization: Use transform: translate3d for GPU acceleration and to avoid layout thrashing (Reflow)
+    // caused by changing top/left properties on every frame.
     const cursor = document.getElementById('custom-cursor');
     const cursorDot = document.getElementById('cursor-dot');
 
@@ -73,13 +75,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let mouseX = 0, mouseY = 0;
     let cursorX = 0, cursorY = 0;
+    let cursorScale = 1;
+    let targetScale = 1;
 
     document.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
 
-        cursorDot.style.left = `${mouseX - 2}px`;
-        cursorDot.style.top = `${mouseY - 2}px`;
+        cursorDot.style.transform = `translate3d(${mouseX - 2}px, ${mouseY - 2}px, 0)`;
     });
 
     const animateCursor = () => {
@@ -87,8 +90,9 @@ document.addEventListener('DOMContentLoaded', () => {
         cursorX += (mouseX - cursorX) * easing;
         cursorY += (mouseY - cursorY) * easing;
 
-        cursor.style.left = `${cursorX - 10}px`;
-        cursor.style.top = `${cursorY - 10}px`;
+        cursorScale += (targetScale - cursorScale) * easing;
+
+        cursor.style.transform = `translate3d(${cursorX - 10}px, ${cursorY - 10}px, 0) scale(${cursorScale})`;
 
         requestAnimationFrame(animateCursor);
     };
@@ -98,11 +102,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('mouseover', (e) => {
         if (e.target.closest(hoverElements)) {
             cursor.classList.add('cursor-hover');
+            targetScale = 3;
         }
     });
     document.addEventListener('mouseout', (e) => {
         if (e.target.closest(hoverElements)) {
             cursor.classList.remove('cursor-hover');
+            targetScale = 1;
         }
     });
 
