@@ -222,3 +222,25 @@ section.visible .reveal-text > * {
     background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
     pointer-events: none;
 }
+/* Accessibility: Skip to Content Link */
+.skip-link {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 10001; /* Above custom cursor */
+    background-color: var(--neon-cyan);
+    color: #000;
+    padding: 0.75rem 1.5rem;
+    font-weight: bold;
+    border-radius: 9999px;
+    transform: translateY(-200%);
+    transition: transform 0.3s ease-out;
+    text-decoration: none;
+    box-shadow: 0 0 15px rgba(34, 211, 238, 0.5);
+}
+
+.skip-link:focus {
+    transform: translateY(0);
+    outline: 2px solid white;
+    outline-offset: 2px;
+}
