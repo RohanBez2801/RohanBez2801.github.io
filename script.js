@@ -73,13 +73,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let mouseX = 0, mouseY = 0;
     let cursorX = 0, cursorY = 0;
+    let cursorScale = 1;
+    let targetScale = 1;
 
     document.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
-
-        cursorDot.style.left = `${mouseX - 2}px`;
-        cursorDot.style.top = `${mouseY - 2}px`;
     });
 
     const animateCursor = () => {
@@ -87,8 +86,16 @@ document.addEventListener('DOMContentLoaded', () => {
         cursorX += (mouseX - cursorX) * easing;
         cursorY += (mouseY - cursorY) * easing;
 
-        cursor.style.left = `${cursorX - 10}px`;
-        cursor.style.top = `${cursorY - 10}px`;
+        // Smoothly interpolate scale
+        cursorScale += (targetScale - cursorScale) * 0.15;
+
+        // Use translate3d for better performance (GPU composition)
+        // cursor is 20px, so offset by -10px
+        cursor.style.transform = `translate3d(${cursorX - 10}px, ${cursorY - 10}px, 0) scale(${cursorScale})`;
+
+        // cursorDot is 4px, so offset by -2px
+        // Updating dot in RAF loop ensures synchronization and avoids layout thrashing in mousemove
+        cursorDot.style.transform = `translate3d(${mouseX - 2}px, ${mouseY - 2}px, 0)`;
 
         requestAnimationFrame(animateCursor);
     };
@@ -97,12 +104,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const hoverElements = 'a, button, .glass-card, .px-4.py-2.glass, span.px-4.py-2, [role="button"]';
     document.addEventListener('mouseover', (e) => {
         if (e.target.closest(hoverElements)) {
-            cursor.classList.add('cursor-hover');
+            targetScale = 3;
+            cursor.classList.add('cursor-hover'); // For color change
         }
     });
     document.addEventListener('mouseout', (e) => {
         if (e.target.closest(hoverElements)) {
-            cursor.classList.remove('cursor-hover');
+            targetScale = 1;
+            cursor.classList.remove('cursor-hover'); // For color change
         }
     });
 
