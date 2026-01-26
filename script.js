@@ -46,6 +46,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Smooth scroll for navigation links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
+            // Ignore skip link to allow default behavior (immediate jump + focus)
+            if (this.classList.contains('skip-link')) return;
+
             const targetId = this.getAttribute('href');
             if (targetId === '#') {
                 e.preventDefault();
