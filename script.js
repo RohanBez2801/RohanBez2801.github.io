@@ -128,15 +128,30 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add parallax effect to glass cards on mouse move
     const glassCards = document.querySelectorAll('.glass-card');
     glassCards.forEach(card => {
+        let bounds = null;
+
+        const updateBounds = () => {
+            const rect = card.getBoundingClientRect();
+            bounds = {
+                left: rect.left + window.scrollX,
+                top: rect.top + window.scrollY,
+                width: rect.width,
+                height: rect.height
+            };
+        };
+
+        card.addEventListener('mouseenter', updateBounds);
+
+        // Optimization: Cache bounds to avoid getBoundingClientRect() (reflow) in mousemove
         card.addEventListener('mousemove', (e) => {
             if (window.innerWidth < 1024) return;
+            if (!bounds) updateBounds();
 
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+            const x = e.pageX - bounds.left;
+            const y = e.pageY - bounds.top;
 
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
+            const centerX = bounds.width / 2;
+            const centerY = bounds.height / 2;
 
             const rotateX = (y - centerY) / 30; // Reduced intensity for smoothness
             const rotateY = (centerX - x) / 30;
@@ -146,6 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         card.addEventListener('mouseleave', () => {
             card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0) scale(1)`;
+            bounds = null;
         });
     });
 });
