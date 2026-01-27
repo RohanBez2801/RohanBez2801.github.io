@@ -34,11 +34,13 @@ body {
     background: white;
     border-radius: 50%;
     position: fixed;
+    top: 0;
+    left: 0;
     pointer-events: none;
     z-index: 9999;
     mix-blend-mode: difference;
-    transition: transform 0.1s ease-out, background-color 0.3s ease;
-    will-change: left, top, transform;
+    transition: background-color 0.3s ease;
+    will-change: transform;
 }
 
 #cursor-dot {
@@ -47,13 +49,14 @@ body {
     background: var(--neon-cyan);
     border-radius: 50%;
     position: fixed;
+    top: 0;
+    left: 0;
     pointer-events: none;
     z-index: 10000;
     transition: transform 0.05s ease-out;
 }
 
 .cursor-hover {
-    transform: scale(3);
     background-color: var(--neon-fuchsia) !important;
 }
 
