@@ -1,4 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Performance: Cache window dimensions and state
+    let isDesktop = window.innerWidth >= 1024;
+    let windowWidth = window.innerWidth;
+    let windowHeight = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+        isDesktop = window.innerWidth >= 1024;
+        windowWidth = window.innerWidth;
+        windowHeight = window.innerHeight;
+    }, { passive: true });
+
     // Mobile Menu Toggle
     const menuBtn = document.getElementById('menu-btn');
     const mobileMenu = document.getElementById('mobile-menu');
@@ -122,8 +133,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (now - lastMove < 30) return;
         lastMove = now;
 
-        const x = (e.clientX / window.innerWidth - 0.5) * 2;
-        const y = (e.clientY / window.innerHeight - 0.5) * 2;
+        const x = (e.clientX / windowWidth - 0.5) * 2;
+        const y = (e.clientY / windowHeight - 0.5) * 2;
 
         if (backgroundBlobs.length >= 2) {
             backgroundBlobs[0].style.transform = `translate(${x * 30}px, ${y * 30}px)`;
@@ -134,24 +145,40 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add parallax effect to glass cards on mouse move
     const glassCards = document.querySelectorAll('.glass-card');
     glassCards.forEach(card => {
-        card.addEventListener('mousemove', (e) => {
-            if (window.innerWidth < 1024) return;
+        let cardCenter = null;
 
+        // Cache dimensions on enter to avoid layout thrashing (getBoundingClientRect) during animation
+        card.addEventListener('mouseenter', () => {
             const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+            cardCenter = {
+                x: rect.left + rect.width / 2 + window.scrollX,
+                y: rect.top + rect.height / 2 + window.scrollY
+            };
+        });
 
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
+        card.addEventListener('mousemove', (e) => {
+            if (!isDesktop) return;
 
-            const rotateX = (y - centerY) / 30; // Reduced intensity for smoothness
-            const rotateY = (centerX - x) / 30;
+            // Fallback for edge cases (e.g. load under cursor)
+            if (!cardCenter) {
+                const rect = card.getBoundingClientRect();
+                cardCenter = {
+                    x: rect.left + rect.width / 2 + window.scrollX,
+                    y: rect.top + rect.height / 2 + window.scrollY
+                };
+            }
+
+            // Use pageX/Y (document relative) with cached document-relative center
+            // This avoids recalculating layout/styles on every frame
+            const rotateX = (e.pageY - cardCenter.y) / 30;
+            const rotateY = (cardCenter.x - e.pageX) / 30;
 
             card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-12px) scale(1.02)`;
         });
 
         card.addEventListener('mouseleave', () => {
             card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0) scale(1)`;
+            cardCenter = null; // Force recalc on next enter
         });
     });
 });
