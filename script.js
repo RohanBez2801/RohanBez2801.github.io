@@ -66,6 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Custom Cursor logic
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
     const cursor = document.getElementById('custom-cursor');
     const cursorDot = document.getElementById('cursor-dot');
 
