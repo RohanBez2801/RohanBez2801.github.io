@@ -154,4 +154,37 @@ document.addEventListener('DOMContentLoaded', () => {
             card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0) scale(1)`;
         });
     });
+
+    // Back to Top Button Logic
+    const backToTopBtn = document.getElementById('back-to-top');
+
+    if (backToTopBtn) {
+        const toggleBackToTop = () => {
+            if (window.scrollY > 300) {
+                backToTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-10');
+                backToTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+            } else {
+                backToTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-10');
+                backToTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+            }
+        };
+
+        let isScrolling = false;
+        window.addEventListener('scroll', () => {
+            if (!isScrolling) {
+                window.requestAnimationFrame(() => {
+                    toggleBackToTop();
+                    isScrolling = false;
+                });
+                isScrolling = true;
+            }
+        });
+
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    }
 });
