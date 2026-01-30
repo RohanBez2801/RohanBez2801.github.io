@@ -5,3 +5,7 @@
 ## 2025-10-27 - Accessible Hidden Elements in Tailwind v2 CDN
 **Learning:** Tailwind v2 CDN build lacks default `focus` variants for `inset` utilities, making off-screen positioning transitions difficult without custom config.
 **Action:** Use `opacity-0 pointer-events-none focus:opacity-100 focus:pointer-events-auto` for "Skip to Content" links to ensure visibility on focus in static builds.
+
+## 2025-10-28 - Performance of Scroll Listeners with Animations
+**Learning:** When adding scroll-triggered UI elements (like Back to Top buttons) to a page with heavy custom cursor/parallax animations, using `requestAnimationFrame` is critical to prevent layout thrashing and maintain smooth frame rates.
+**Action:** Always wrap scroll event handlers in a `requestAnimationFrame` loop or throttle function when other animations are present.
