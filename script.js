@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const cursor = document.getElementById('custom-cursor');
     const cursorDot = document.getElementById('cursor-dot');
 
-    if (!cursor || !cursorDot) return;
+    if (!cursor || !cursorDot || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     let mouseX = 0, mouseY = 0;
     let cursorX = 0, cursorY = 0;
@@ -117,19 +117,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const backgroundBlobs = document.querySelectorAll('.fixed .animate-pulse');
     let lastMove = 0;
 
-    document.addEventListener('mousemove', (e) => {
-        const now = Date.now();
-        if (now - lastMove < 30) return;
-        lastMove = now;
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.addEventListener('mousemove', (e) => {
+            const now = Date.now();
+            if (now - lastMove < 30) return;
+            lastMove = now;
 
-        const x = (e.clientX / window.innerWidth - 0.5) * 2;
-        const y = (e.clientY / window.innerHeight - 0.5) * 2;
+            const x = (e.clientX / window.innerWidth - 0.5) * 2;
+            const y = (e.clientY / window.innerHeight - 0.5) * 2;
 
-        if (backgroundBlobs.length >= 2) {
-            backgroundBlobs[0].style.transform = `translate(${x * 30}px, ${y * 30}px)`;
-            backgroundBlobs[1].style.transform = `translate(${-x * 30}px, ${-y * 30}px)`;
-        }
-    });
+            if (backgroundBlobs.length >= 2) {
+                backgroundBlobs[0].style.transform = `translate(${x * 30}px, ${y * 30}px)`;
+                backgroundBlobs[1].style.transform = `translate(${-x * 30}px, ${-y * 30}px)`;
+            }
+        });
+    }
 
     // Add parallax effect to glass cards on mouse move
     const glassCards = document.querySelectorAll('.glass-card');
@@ -145,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         card.addEventListener('mousemove', (e) => {
-            if (window.innerWidth < 1024) return;
+            if (window.innerWidth < 1024 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
             // Optimization: Lazy init bounds to handle edge cases (resize/load)
             // Caching prevents layout thrashing (reflow) on every frame

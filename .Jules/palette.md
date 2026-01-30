@@ -9,3 +9,7 @@
 ## 2025-10-28 - Performance of Scroll Listeners with Animations
 **Learning:** When adding scroll-triggered UI elements (like Back to Top buttons) to a page with heavy custom cursor/parallax animations, using `requestAnimationFrame` is critical to prevent layout thrashing and maintain smooth frame rates.
 **Action:** Always wrap scroll event handlers in a `requestAnimationFrame` loop or throttle function when other animations are present.
+
+## 2025-05-18 - [Custom Cursor Accessibility]
+**Learning:** Hiding the default cursor with `cursor: none` is an accessibility barrier if not scoped to users who have no motion preference, as custom cursors can be disorienting or unusable for some.
+**Action:** Always wrap custom cursor styles and logic in `@media (prefers-reduced-motion: no-preference)` and `if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches)`.

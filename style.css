@@ -6,7 +6,7 @@
     --glass-border: rgba(255, 255, 255, 0.1);
 }
 
-@media (pointer: fine) {
+@media (pointer: fine) and (prefers-reduced-motion: no-preference) {
     * {
         cursor: none !important;
     }
@@ -22,7 +22,7 @@ body {
     display: none;
 }
 
-@media (pointer: fine) {
+@media (pointer: fine) and (prefers-reduced-motion: no-preference) {
     #custom-cursor, #cursor-dot {
         display: block;
     }
@@ -235,4 +235,33 @@ section.visible .reveal-text > * {
 
 .delay-4s {
     animation-delay: 4s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    section {
+        opacity: 1 !important;
+        transform: none !important;
+        filter: none !important;
+        transition: none !important;
+    }
+
+    .reveal-text > * {
+        transform: none !important;
+        transition: none !important;
+    }
+
+    .glass-card:hover {
+        transform: none !important;
+    }
+
+    body {
+        scroll-behavior: auto !important;
+    }
 }
