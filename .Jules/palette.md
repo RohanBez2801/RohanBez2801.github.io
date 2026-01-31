@@ -13,3 +13,7 @@
 ## 2025-05-18 - [Custom Cursor Accessibility]
 **Learning:** Hiding the default cursor with `cursor: none` is an accessibility barrier if not scoped to users who have no motion preference, as custom cursors can be disorienting or unusable for some.
 **Action:** Always wrap custom cursor styles and logic in `@media (prefers-reduced-motion: no-preference)` and `if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches)`.
+
+## 2026-01-31 - Decorative Emoji Noise
+**Learning:** High-impact visual portfolios often use large emojis as decorative backgrounds. Without `aria-hidden="true"`, these create significant auditory noise for screen reader users, announcing "Laptop", "Office Building" etc. out of context.
+**Action:** Always wrap decorative emoji elements in a container with `aria-hidden="true"`.
