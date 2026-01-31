@@ -1,4 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Performance optimization: Cache window dimensions and reduced motion preference
+    // to avoid layout thrashing and expensive queries in animation loops.
+    let windowWidth = window.innerWidth;
+    let windowHeight = window.innerHeight;
+    let prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    window.addEventListener('resize', () => {
+        windowWidth = window.innerWidth;
+        windowHeight = window.innerHeight;
+    });
+
+    window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', (e) => {
+        prefersReducedMotion = e.matches;
+    });
+
     // Mobile Menu Toggle
     const menuBtn = document.getElementById('menu-btn');
     const mobileMenu = document.getElementById('mobile-menu');
@@ -117,14 +132,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const backgroundBlobs = document.querySelectorAll('.fixed .animate-pulse');
     let lastMove = 0;
 
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (!prefersReducedMotion) {
         document.addEventListener('mousemove', (e) => {
+            if (prefersReducedMotion) return;
+
             const now = Date.now();
             if (now - lastMove < 30) return;
             lastMove = now;
 
-            const x = (e.clientX / window.innerWidth - 0.5) * 2;
-            const y = (e.clientY / window.innerHeight - 0.5) * 2;
+            const x = (e.clientX / windowWidth - 0.5) * 2;
+            const y = (e.clientY / windowHeight - 0.5) * 2;
 
             if (backgroundBlobs.length >= 2) {
                 backgroundBlobs[0].style.transform = `translate(${x * 30}px, ${y * 30}px)`;
@@ -147,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         card.addEventListener('mousemove', (e) => {
-            if (window.innerWidth < 1024 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            if (windowWidth < 1024 || prefersReducedMotion) return;
 
             // Optimization: Lazy init bounds to handle edge cases (resize/load)
             // Caching prevents layout thrashing (reflow) on every frame
