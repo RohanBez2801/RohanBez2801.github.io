@@ -12,3 +12,13 @@
 **Vulnerability:** `style-src 'unsafe-inline'` weakens CSP by allowing inline styles, which can be vectors for CSS injection attacks.
 **Learning:** Refactoring inline styles (e.g., `style="z-index: 10001"`) into utility classes in `style.css` allows for a stricter CSP without breaking functionality.
 **Prevention:** Avoid `style="..."` attributes; use utility classes and remove `'unsafe-inline'` from CSP.
+
+## 2025-05-18 - CSP Upgrade Insecure Requests
+**Vulnerability:** Mixed content warnings or insecure resource loading if the site is served over HTTPS but requests HTTP resources.
+**Learning:** The `upgrade-insecure-requests` directive in CSP automatically upgrades insecure HTTP requests to HTTPS before fetching. This is a powerful "set and forget" security enhancement for modern sites, especially when relative paths or user-generated content might accidentally use HTTP.
+**Prevention:** Include `upgrade-insecure-requests;` in the CSP.
+
+## 2025-05-18 - CSP Connect-Src Regression Risks
+**Vulnerability:** Overly strict `connect-src 'none'` can silently break legitimate site features (like analytics, hot-reloading, or future enhancements) if not carefully audited.
+**Learning:** While `connect-src 'none'` is secure for a purely static site, it imposes a maintenance burden and regression risk for future changes. `connect-src 'self'` is a balanced default for static sites that might evolve.
+**Prevention:** Default to `connect-src 'self'` unless strict prohibition of all network requests is a specific requirement.
