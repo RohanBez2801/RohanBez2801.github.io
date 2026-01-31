@@ -22,3 +22,8 @@
 **Vulnerability:** Overly strict `connect-src 'none'` can silently break legitimate site features (like analytics, hot-reloading, or future enhancements) if not carefully audited.
 **Learning:** While `connect-src 'none'` is secure for a purely static site, it imposes a maintenance burden and regression risk for future changes. `connect-src 'self'` is a balanced default for static sites that might evolve.
 **Prevention:** Default to `connect-src 'self'` unless strict prohibition of all network requests is a specific requirement.
+
+## 2025-05-18 - Fail Safe UI Patterns (DoS Prevention)
+**Vulnerability:** Hardcoded CSS rules (e.g., `cursor: none !important`) that rely on JavaScript for usability can create a Denial of Service (DoS) condition if JavaScript fails to load or execute.
+**Learning:** Security extends to Availability. Critical UI components should never be dependent on a secondary system (JS) without a fallback. "Fail Safe" means the default state should be usable.
+**Prevention:** Scope aggressive UI changes (like hiding the cursor) to classes that are dynamically added only after the replacement feature is successfully initialized.

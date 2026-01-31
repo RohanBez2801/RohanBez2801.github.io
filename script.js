@@ -71,6 +71,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!cursor || !cursorDot || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
+    // Sentinel: Only hide default cursor if custom cursor is successfully initialized
+    document.body.classList.add('custom-cursor-active');
+
     let mouseX = 0, mouseY = 0;
     let cursorX = 0, cursorY = 0;
 

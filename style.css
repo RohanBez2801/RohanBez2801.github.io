@@ -7,7 +7,8 @@
 }
 
 @media (pointer: fine) and (prefers-reduced-motion: no-preference) {
-    * {
+    body.custom-cursor-active,
+    body.custom-cursor-active * {
         cursor: none !important;
     }
 }
