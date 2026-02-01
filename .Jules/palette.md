@@ -13,3 +13,7 @@
 ## 2025-05-18 - [Custom Cursor Accessibility]
 **Learning:** Hiding the default cursor with `cursor: none` is an accessibility barrier if not scoped to users who have no motion preference, as custom cursors can be disorienting or unusable for some.
 **Action:** Always wrap custom cursor styles and logic in `@media (prefers-reduced-motion: no-preference)` and `if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches)`.
+
+## 2025-10-29 - Decorative Icons in Content Cards
+**Learning:** In glassmorphism/visual-heavy designs, large emoji or icons used as background decoration often clutter screen reader output with redundant information (e.g., "Office Building" for a project card).
+**Action:** Systematically audit decorative icons in cards and apply `aria-hidden="true"` to their containers to preserve visual flair without semantic noise.
