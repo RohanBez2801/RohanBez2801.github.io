@@ -68,49 +68,50 @@ document.addEventListener('DOMContentLoaded', () => {
     // Custom Cursor logic
     const cursor = document.getElementById('custom-cursor');
     const cursorDot = document.getElementById('cursor-dot');
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    if (!cursor || !cursorDot || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (cursor && cursorDot && !prefersReducedMotion) {
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
 
-    let mouseX = 0, mouseY = 0;
-    let cursorX = 0, cursorY = 0;
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
 
-    document.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
+            // Use translate3d for performance (compositor-only)
+            cursorDot.style.transform = `translate3d(${mouseX - 2}px, ${mouseY - 2}px, 0)`;
+        });
 
-        // Use translate3d for performance (compositor-only)
-        cursorDot.style.transform = `translate3d(${mouseX - 2}px, ${mouseY - 2}px, 0)`;
-    });
+        let cursorScale = 1;
 
-    let cursorScale = 1;
+        const animateCursor = () => {
+            const easing = 0.08; // Smoother, slower easing
+            cursorX += (mouseX - cursorX) * easing;
+            cursorY += (mouseY - cursorY) * easing;
 
-    const animateCursor = () => {
-        const easing = 0.08; // Smoother, slower easing
-        cursorX += (mouseX - cursorX) * easing;
-        cursorY += (mouseY - cursorY) * easing;
+            // Interpolate scale for smooth hover effect
+            const targetScale = cursor.classList.contains('cursor-hover') ? 3 : 1;
+            cursorScale += (targetScale - cursorScale) * 0.1;
 
-        // Interpolate scale for smooth hover effect
-        const targetScale = cursor.classList.contains('cursor-hover') ? 3 : 1;
-        cursorScale += (targetScale - cursorScale) * 0.1;
+            // Use translate3d and scale for compositor-only animation
+            cursor.style.transform = `translate3d(${cursorX - 10}px, ${cursorY - 10}px, 0) scale(${cursorScale})`;
 
-        // Use translate3d and scale for compositor-only animation
-        cursor.style.transform = `translate3d(${cursorX - 10}px, ${cursorY - 10}px, 0) scale(${cursorScale})`;
+            requestAnimationFrame(animateCursor);
+        };
+        animateCursor();
 
-        requestAnimationFrame(animateCursor);
-    };
-    animateCursor();
-
-    const hoverElements = 'a, button, .glass-card, .px-4.py-2.glass, span.px-4.py-2, [role="button"]';
-    document.addEventListener('mouseover', (e) => {
-        if (e.target.closest(hoverElements)) {
-            cursor.classList.add('cursor-hover');
-        }
-    });
-    document.addEventListener('mouseout', (e) => {
-        if (e.target.closest(hoverElements)) {
-            cursor.classList.remove('cursor-hover');
-        }
-    });
+        const hoverElements = 'a, button, .glass-card, .px-4.py-2.glass, span.px-4.py-2, [role="button"]';
+        document.addEventListener('mouseover', (e) => {
+            if (e.target.closest(hoverElements)) {
+                cursor.classList.add('cursor-hover');
+            }
+        });
+        document.addEventListener('mouseout', (e) => {
+            if (e.target.closest(hoverElements)) {
+                cursor.classList.remove('cursor-hover');
+            }
+        });
+    }
 
     // Performance: Throttling mousemove for background blobs
     // Cache the DOM query outside the event listener to prevent frequent DOM reflows/searches
