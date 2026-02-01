@@ -77,9 +77,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
-
-        // Use translate3d for performance (compositor-only)
-        cursorDot.style.transform = `translate3d(${mouseX - 2}px, ${mouseY - 2}px, 0)`;
     });
 
     let cursorScale = 1;
@@ -92,6 +89,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Interpolate scale for smooth hover effect
         const targetScale = cursor.classList.contains('cursor-hover') ? 3 : 1;
         cursorScale += (targetScale - cursorScale) * 0.1;
+
+        // Use translate3d for performance (compositor-only)
+        // Optimization: Move DOM update to requestAnimationFrame to decouple from high-frequency mousemove events
+        cursorDot.style.transform = `translate3d(${mouseX - 2}px, ${mouseY - 2}px, 0)`;
 
         // Use translate3d and scale for compositor-only animation
         cursor.style.transform = `translate3d(${cursorX - 10}px, ${cursorY - 10}px, 0) scale(${cursorScale})`;
