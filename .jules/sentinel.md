@@ -22,3 +22,8 @@
 **Vulnerability:** Overly strict `connect-src 'none'` can silently break legitimate site features (like analytics, hot-reloading, or future enhancements) if not carefully audited.
 **Learning:** While `connect-src 'none'` is secure for a purely static site, it imposes a maintenance burden and regression risk for future changes. `connect-src 'self'` is a balanced default for static sites that might evolve.
 **Prevention:** Default to `connect-src 'self'` unless strict prohibition of all network requests is a specific requirement.
+
+## 2026-02-01 - Monolithic Event Listener Risks
+**Vulnerability:** A "Logic Bomb" availability issue where an early `return` inside a monolithic `DOMContentLoaded` listener caused subsequent, unrelated features (like accessibility controls) to fail silently under specific conditions (reduced motion).
+**Learning:** Monolithic initialization functions are fragile. Guard clauses for specific features should only exit the scope of that feature, not the entire initialization block.
+**Prevention:** Scope feature-specific logic in functions or explicit blocks. Avoid top-level `return` in the main entry point unless the entire application should stop.
