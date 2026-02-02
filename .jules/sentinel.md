@@ -27,3 +27,8 @@
 **Vulnerability:** A "Logic Bomb" availability issue where an early `return` inside a monolithic `DOMContentLoaded` listener caused subsequent, unrelated features (like accessibility controls) to fail silently under specific conditions (reduced motion).
 **Learning:** Monolithic initialization functions are fragile. Guard clauses for specific features should only exit the scope of that feature, not the entire initialization block.
 **Prevention:** Scope feature-specific logic in functions or explicit blocks. Avoid top-level `return` in the main entry point unless the entire application should stop.
+
+## 2026-02-02 - Strict CSP Component Isolation
+**Vulnerability:** Defaulting CSP directives like `base-uri`, `form-action`, and `frame-src` to `'self'` or allowing them implicitly leaves potential attack vectors open (e.g., base tag injection, form hijacking) even if not currently used.
+**Learning:** For static sites, explicitly setting unused directives to `'none'` (Principle of Least Privilege) drastically reduces the potential impact of future vulnerabilities or misconfigurations.
+**Prevention:** Audit all CSP directives and set `base-uri`, `form-action`, `frame-src`, and `connect-src` to `'none'` if the feature is not explicitly required.
