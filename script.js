@@ -77,9 +77,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener('mousemove', (e) => {
             mouseX = e.clientX;
             mouseY = e.clientY;
-
-            // Use translate3d for performance (compositor-only)
-            cursorDot.style.transform = `translate3d(${mouseX - 2}px, ${mouseY - 2}px, 0)`;
         });
 
         let cursorScale = 1;
@@ -95,6 +92,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Use translate3d and scale for compositor-only animation
             cursor.style.transform = `translate3d(${cursorX - 10}px, ${cursorY - 10}px, 0) scale(${cursorScale})`;
+
+            // Optimization: Update dot position in RAF loop instead of mousemove handler
+            // This decouples input from rendering, preventing layout thrashing on high-poll-rate mice
+            cursorDot.style.transform = `translate3d(${mouseX - 2}px, ${mouseY - 2}px, 0)`;
 
             requestAnimationFrame(animateCursor);
         };
