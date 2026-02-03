@@ -27,3 +27,8 @@
 **Vulnerability:** A "Logic Bomb" availability issue where an early `return` inside a monolithic `DOMContentLoaded` listener caused subsequent, unrelated features (like accessibility controls) to fail silently under specific conditions (reduced motion).
 **Learning:** Monolithic initialization functions are fragile. Guard clauses for specific features should only exit the scope of that feature, not the entire initialization block.
 **Prevention:** Scope feature-specific logic in functions or explicit blocks. Avoid top-level `return` in the main entry point unless the entire application should stop.
+
+## 2026-02-02 - External Link Security
+**Vulnerability:** Reverse Tabnabbing & Referrer Leakage. Opening external links (like WhatsApp) without `noopener` allows the target page to access `window.opener` in older browsers, potentially enabling phishing redirects. Missing `noreferrer` leaks the source URL.
+**Learning:** Even "trusted" external sites (like `wa.me`) can behave unexpectedly or track users via Referrer headers. Explicitly setting `rel="noopener noreferrer"` provides a robust defense and privacy enhancement.
+**Prevention:** Always use `rel="noopener noreferrer"` when using `target="_blank"`. Update `aria-label` to indicate the new tab behavior for accessibility.
