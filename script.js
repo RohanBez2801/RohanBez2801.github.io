@@ -116,22 +116,38 @@ document.addEventListener('DOMContentLoaded', () => {
     // Performance: Throttling mousemove for background blobs
     // Cache the DOM query outside the event listener to prevent frequent DOM reflows/searches
     const backgroundBlobs = document.querySelectorAll('.fixed .animate-pulse');
-    let lastMove = 0;
 
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && backgroundBlobs.length >= 2) {
+        let mouseX = 0;
+        let mouseY = 0;
+        let rafId = null;
+        let windowWidth = window.innerWidth;
+        let windowHeight = window.innerHeight;
+
+        // Optimization: Cache window dimensions to avoid layout thrashing in the animation loop
+        window.addEventListener('resize', () => {
+            windowWidth = window.innerWidth;
+            windowHeight = window.innerHeight;
+        }, { passive: true });
+
+        const updateBlobs = () => {
+            const x = (mouseX / windowWidth - 0.5) * 2;
+            const y = (mouseY / windowHeight - 0.5) * 2;
+
+            backgroundBlobs[0].style.transform = `translate(${x * 30}px, ${y * 30}px)`;
+            backgroundBlobs[1].style.transform = `translate(${-x * 30}px, ${-y * 30}px)`;
+
+            rafId = null;
+        };
+
         document.addEventListener('mousemove', (e) => {
-            const now = Date.now();
-            if (now - lastMove < 30) return;
-            lastMove = now;
+            mouseX = e.clientX;
+            mouseY = e.clientY;
 
-            const x = (e.clientX / window.innerWidth - 0.5) * 2;
-            const y = (e.clientY / window.innerHeight - 0.5) * 2;
-
-            if (backgroundBlobs.length >= 2) {
-                backgroundBlobs[0].style.transform = `translate(${x * 30}px, ${y * 30}px)`;
-                backgroundBlobs[1].style.transform = `translate(${-x * 30}px, ${-y * 30}px)`;
+            if (!rafId) {
+                rafId = requestAnimationFrame(updateBlobs);
             }
-        });
+        }, { passive: true });
     }
 
     // Add parallax effect to glass cards on mouse move
