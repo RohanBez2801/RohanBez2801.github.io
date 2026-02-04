@@ -209,4 +209,27 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
+
+    // Copy Email Functionality
+    const copyEmailBtn = document.getElementById('copy-email-btn');
+    if (copyEmailBtn) {
+        copyEmailBtn.addEventListener('click', () => {
+            const email = 'sversatech@gmail.com';
+            navigator.clipboard.writeText(email).then(() => {
+                const originalIcon = copyEmailBtn.innerHTML;
+                // Checkmark icon
+                copyEmailBtn.innerHTML = '<svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
+                copyEmailBtn.setAttribute('aria-label', 'Email copied');
+                copyEmailBtn.classList.add('bg-cyan-500/20');
+
+                setTimeout(() => {
+                    copyEmailBtn.innerHTML = originalIcon;
+                    copyEmailBtn.setAttribute('aria-label', 'Copy email address');
+                    copyEmailBtn.classList.remove('bg-cyan-500/20');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy email:', err);
+            });
+        });
+    }
 });
