@@ -1,0 +1,3 @@
+## 2025-02-18 - Verifying Clipboard Interactions in Headless Environments
+**Learning:** Browser security models often restrict clipboard access (specifically `navigator.clipboard.writeText`) in headless modes or `file://` contexts. This causes standard verification scripts to fail even if the logic is correct.
+**Action:** When verifying copy-to-clipboard features with Playwright in restricted environments, use `page.evaluate` to mock `navigator.clipboard.writeText` to return a resolved Promise. This allows testing the UI feedback loop (e.g., icon changes, toast messages) without hitting security blockers.
