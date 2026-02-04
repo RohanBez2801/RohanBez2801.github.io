@@ -27,3 +27,8 @@
 **Vulnerability:** A "Logic Bomb" availability issue where an early `return` inside a monolithic `DOMContentLoaded` listener caused subsequent, unrelated features (like accessibility controls) to fail silently under specific conditions (reduced motion).
 **Learning:** Monolithic initialization functions are fragile. Guard clauses for specific features should only exit the scope of that feature, not the entire initialization block.
 **Prevention:** Scope feature-specific logic in functions or explicit blocks. Avoid top-level `return` in the main entry point unless the entire application should stop.
+
+## 2025-05-18 - Trusted Types in CSP
+**Vulnerability:** DOM-based XSS (Cross-Site Scripting) vulnerabilities where an attacker controls input to a dangerous sink (like `innerHTML`).
+**Learning:** Even with a strict `script-src`, accidental usage of dangerous DOM APIs in future code can introduce XSS. Trusted Types enforces a type-system check on these sinks at the browser level, ensuring only policy-created strings can be used.
+**Prevention:** Add `require-trusted-types-for 'script';` to the CSP. This serves as a strong defense-in-depth mechanism, "locking the door" against accidental DOM XSS.
