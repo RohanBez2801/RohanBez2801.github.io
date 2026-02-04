@@ -113,25 +113,36 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Performance: Throttling mousemove for background blobs
+    // Performance: Optimized mousemove for background blobs using RAF and cached layout
     // Cache the DOM query outside the event listener to prevent frequent DOM reflows/searches
     const backgroundBlobs = document.querySelectorAll('.fixed .animate-pulse');
-    let lastMove = 0;
+    let blobRafId = null;
+    let winWidth = window.innerWidth;
+    let winHeight = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+        winWidth = window.innerWidth;
+        winHeight = window.innerHeight;
+    }, { passive: true });
 
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         document.addEventListener('mousemove', (e) => {
-            const now = Date.now();
-            if (now - lastMove < 30) return;
-            lastMove = now;
+            if (blobRafId) return;
 
-            const x = (e.clientX / window.innerWidth - 0.5) * 2;
-            const y = (e.clientY / window.innerHeight - 0.5) * 2;
+            const clientX = e.clientX;
+            const clientY = e.clientY;
 
-            if (backgroundBlobs.length >= 2) {
-                backgroundBlobs[0].style.transform = `translate(${x * 30}px, ${y * 30}px)`;
-                backgroundBlobs[1].style.transform = `translate(${-x * 30}px, ${-y * 30}px)`;
-            }
-        });
+            blobRafId = requestAnimationFrame(() => {
+                const x = (clientX / winWidth - 0.5) * 2;
+                const y = (clientY / winHeight - 0.5) * 2;
+
+                if (backgroundBlobs.length >= 2) {
+                    backgroundBlobs[0].style.transform = `translate(${x * 30}px, ${y * 30}px)`;
+                    backgroundBlobs[1].style.transform = `translate(${-x * 30}px, ${-y * 30}px)`;
+                }
+                blobRafId = null;
+            });
+        }, { passive: true });
     }
 
     // Add parallax effect to glass cards on mouse move
