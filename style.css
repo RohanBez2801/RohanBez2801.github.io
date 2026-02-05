@@ -269,3 +269,8 @@ section.visible .reveal-text > * {
         scroll-behavior: auto !important;
     }
 }
+
+.active-nav {
+    color: var(--neon-cyan) !important;
+    text-shadow: 0 0 8px rgba(34, 211, 238, 0.5);
+}
