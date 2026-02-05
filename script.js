@@ -177,6 +177,43 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Active Navigation Link Highlighting
+    const spySections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('nav ul li a, #mobile-menu a');
+
+    if (spySections.length > 0 && navLinks.length > 0) {
+        const navObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const id = entry.target.getAttribute('id');
+                const activeLinks = document.querySelectorAll(`nav ul li a[href="#${id}"], #mobile-menu a[href="#${id}"]`);
+
+                if (entry.isIntersecting) {
+                    // Remove active class from all links
+                    navLinks.forEach(link => {
+                        link.classList.remove('active-nav');
+                        link.removeAttribute('aria-current');
+                    });
+
+                    // Add active class to corresponding link
+                    activeLinks.forEach(link => {
+                        link.classList.add('active-nav');
+                        link.setAttribute('aria-current', 'true');
+                    });
+                } else {
+                    // Remove active class from this section's link
+                    activeLinks.forEach(link => {
+                        link.classList.remove('active-nav');
+                        link.removeAttribute('aria-current');
+                    });
+                }
+            });
+        }, { rootMargin: '-45% 0px -45% 0px' });
+
+        spySections.forEach(section => {
+            navObserver.observe(section);
+        });
+    }
+
     // Back to Top Button Logic
     const backToTopBtn = document.getElementById('back-to-top');
 
