@@ -147,32 +147,46 @@ document.addEventListener('DOMContentLoaded', () => {
             bounds.y = rect.top + window.scrollY;
         });
 
+        let rafId = null;
+
         card.addEventListener('mousemove', (e) => {
             if (window.innerWidth < 1024 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-            // Optimization: Lazy init bounds to handle edge cases (resize/load)
-            // Caching prevents layout thrashing (reflow) on every frame
-            if (bounds.width === 0) {
-                const rect = card.getBoundingClientRect();
-                bounds.width = rect.width;
-                bounds.height = rect.height;
-                bounds.x = rect.left + window.scrollX;
-                bounds.y = rect.top + window.scrollY;
-            }
+            if (rafId) return;
 
-            const x = e.pageX - bounds.x;
-            const y = e.pageY - bounds.y;
+            const pageX = e.pageX;
+            const pageY = e.pageY;
 
-            const centerX = bounds.width / 2;
-            const centerY = bounds.height / 2;
+            rafId = requestAnimationFrame(() => {
+                // Optimization: Lazy init bounds to handle edge cases (resize/load)
+                // Caching prevents layout thrashing (reflow) on every frame
+                if (bounds.width === 0) {
+                    const rect = card.getBoundingClientRect();
+                    bounds.width = rect.width;
+                    bounds.height = rect.height;
+                    bounds.x = rect.left + window.scrollX;
+                    bounds.y = rect.top + window.scrollY;
+                }
 
-            const rotateX = (y - centerY) / 30; // Reduced intensity for smoothness
-            const rotateY = (centerX - x) / 30;
+                const x = pageX - bounds.x;
+                const y = pageY - bounds.y;
 
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-12px) scale(1.02)`;
+                const centerX = bounds.width / 2;
+                const centerY = bounds.height / 2;
+
+                const rotateX = (y - centerY) / 30; // Reduced intensity for smoothness
+                const rotateY = (centerX - x) / 30;
+
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-12px) scale(1.02)`;
+                rafId = null;
+            });
         });
 
         card.addEventListener('mouseleave', () => {
+            if (rafId) {
+                cancelAnimationFrame(rafId);
+                rafId = null;
+            }
             card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0) scale(1)`;
         });
     });
