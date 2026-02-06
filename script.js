@@ -43,6 +43,26 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(section);
     });
 
+    // Active Navigation Highlighting
+    const navObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const id = entry.target.getAttribute('id');
+                const navLinks = document.querySelectorAll('nav ul li a, #mobile-menu a');
+                navLinks.forEach(link => link.classList.remove('text-cyan-400'));
+
+                if (id) {
+                    const activeLinks = document.querySelectorAll(`nav ul li a[href="#${id}"], #mobile-menu a[href="#${id}"]`);
+                    activeLinks.forEach(link => link.classList.add('text-cyan-400'));
+                }
+            }
+        });
+    }, { rootMargin: '-50% 0px -50% 0px' });
+
+    document.querySelectorAll('section').forEach(section => {
+        navObserver.observe(section);
+    });
+
     // Smooth scroll for navigation links
     document.querySelectorAll('a[href^="#"]:not(.skip-link)').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
