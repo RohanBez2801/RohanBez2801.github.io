@@ -1,4 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Cache window dimensions for performance
+    let windowWidth = window.innerWidth;
+    let windowHeight = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+        windowWidth = window.innerWidth;
+        windowHeight = window.innerHeight;
+    });
+
     // Mobile Menu Toggle
     const menuBtn = document.getElementById('menu-btn');
     const mobileMenu = document.getElementById('mobile-menu');
@@ -113,24 +122,28 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Performance: Throttling mousemove for background blobs
+    // Performance: RAF-throttled mousemove for background blobs
     // Cache the DOM query outside the event listener to prevent frequent DOM reflows/searches
     const backgroundBlobs = document.querySelectorAll('.fixed .animate-pulse');
-    let lastMove = 0;
+    let blobRequest = null;
 
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         document.addEventListener('mousemove', (e) => {
-            const now = Date.now();
-            if (now - lastMove < 30) return;
-            lastMove = now;
+            if (blobRequest) return;
 
-            const x = (e.clientX / window.innerWidth - 0.5) * 2;
-            const y = (e.clientY / window.innerHeight - 0.5) * 2;
+            const clientX = e.clientX;
+            const clientY = e.clientY;
 
-            if (backgroundBlobs.length >= 2) {
-                backgroundBlobs[0].style.transform = `translate(${x * 30}px, ${y * 30}px)`;
-                backgroundBlobs[1].style.transform = `translate(${-x * 30}px, ${-y * 30}px)`;
-            }
+            blobRequest = requestAnimationFrame(() => {
+                const x = (clientX / windowWidth - 0.5) * 2;
+                const y = (clientY / windowHeight - 0.5) * 2;
+
+                if (backgroundBlobs.length >= 2) {
+                    backgroundBlobs[0].style.transform = `translate(${x * 30}px, ${y * 30}px)`;
+                    backgroundBlobs[1].style.transform = `translate(${-x * 30}px, ${-y * 30}px)`;
+                }
+                blobRequest = null;
+            });
         });
     }
 
@@ -138,6 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const glassCards = document.querySelectorAll('.glass-card');
     glassCards.forEach(card => {
         let bounds = { x: 0, y: 0, width: 0, height: 0 };
+        let rafId = null;
 
         card.addEventListener('mouseenter', () => {
             const rect = card.getBoundingClientRect();
@@ -148,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         card.addEventListener('mousemove', (e) => {
-            if (window.innerWidth < 1024 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            if (windowWidth < 1024 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
             // Optimization: Lazy init bounds to handle edge cases (resize/load)
             // Caching prevents layout thrashing (reflow) on every frame
@@ -160,19 +174,31 @@ document.addEventListener('DOMContentLoaded', () => {
                 bounds.y = rect.top + window.scrollY;
             }
 
-            const x = e.pageX - bounds.x;
-            const y = e.pageY - bounds.y;
+            if (rafId) return;
 
-            const centerX = bounds.width / 2;
-            const centerY = bounds.height / 2;
+            const pageX = e.pageX;
+            const pageY = e.pageY;
 
-            const rotateX = (y - centerY) / 30; // Reduced intensity for smoothness
-            const rotateY = (centerX - x) / 30;
+            rafId = requestAnimationFrame(() => {
+                const x = pageX - bounds.x;
+                const y = pageY - bounds.y;
 
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-12px) scale(1.02)`;
+                const centerX = bounds.width / 2;
+                const centerY = bounds.height / 2;
+
+                const rotateX = (y - centerY) / 30; // Reduced intensity for smoothness
+                const rotateY = (centerX - x) / 30;
+
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-12px) scale(1.02)`;
+                rafId = null;
+            });
         });
 
         card.addEventListener('mouseleave', () => {
+            if (rafId) {
+                cancelAnimationFrame(rafId);
+                rafId = null;
+            }
             card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0) scale(1)`;
         });
     });
